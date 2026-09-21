@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flores Amarillas Especiales 🌻</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at center, #2e1d4d 0%, #130a21 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+        }
+        .font-cursive { font-family: 'Dancing Script', cursive; }
+        
+        /* Pantalla de Inicio Mágica */
+        #start-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #130a21;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 100;
+            transition: opacity 1s ease;
+        }
+
+        /* Girasol Detallado */
+        .sunflower {
+            position: relative;
+            width: 140px; height: 140px;
+            animation: float 5s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4));
+        }
+        .center-flower {
+            position: absolute;
+            top: 40px; left: 40px;
+            width: 60px; height: 60px;
+            background: radial-gradient(circle, #5c3a21 40%, #2e1a0e 100%);
+            border-radius: 50%;
+            border: 3px dashed #8c532b;
+            z-index: 10;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+        .petal {
+            position: absolute;
+            top: 10px; left: 56px;
+            width: 28px; height: 65px;
+            background: linear-gradient(to top, #f59e0b, #fef08a);
+            border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
+            transform-origin: bottom center;
+            box-shadow: 0 0 8px rgba(253, 224, 71, 0.6);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+        .stem {
+            width: 10px; height: 180px;
+            background: linear-gradient(to right, #15803d, #4ade80);
+            border-radius: 5px;
+            margin: -15px auto 0;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.2);
+        }
+
+        /* Partículas / Luces */
+        .sparkle {
+            position: absolute;
+            background: #fef08a;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fef08a, 0 0 20px #f59e0b;
+            animation: rise linear infinite;
+        }
+        @keyframes rise {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="text-white relative">
+
+    <!-- AUDIO DE FONDO (Actualizado para tu archivo flores.mp3 o flores.mp3.mp3) -->
+    <audio id="bg-audio" loop src="flores.mp3"></audio>
+
+    <!-- Control de Música Flotante -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="music-toggle" onclick="toggleAudio()" class="bg-amber-500/20 hover:bg-amber-500/40 border border-yellow-400/40 text-yellow-300 p-3 rounded-full backdrop-blur-md transition-all shadow-lg">
+            <i id="music-icon" class="fas fa-music text-lg"></i>
+        </button>
+    </div>
+
+    <!-- Pantalla Inicial -->
+    <div id="start-screen">
+        <div class="text-6xl mb-6 animate-pulse">🌻</div>
+        <button onclick="startExperience()" class="bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-purple-950 font-bold py-4 px-10 rounded-full text-xl shadow-[0_0_25px_rgba(245,158,11,0.6)] transition transform hover:scale-105">
+            Toca para abrir tu sorpresa ✨
+        </button>
+    </div>
+
+    <!-- Partículas mágicas -->
+    <div id="sparkles-container" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></div>
+
+    <!-- Contenido Principal -->
+    <div id="main-content" class="flex flex-col items-center justify-center p-6 min-h-screen opacity-0 transition-opacity duration-1000 hidden relative z-10">
+        
+        <div class="text-center max-w-xl mx-auto my-auto">
+            <h1 class="text-5xl md:text-6xl font-cursive text-yellow-300 mb-2 drop-shadow-[0_0_15px_rgba(253,224,71,0.5)]">
+                Un Detalle Especial 🌻
+            </h1>
+            <p class="text-gray-300 text-sm md:text-base mb-8">Porque las personas luz merecen flores amarillas hoy y siempre.</p>
+
+            <!-- Ramo de Girasoles -->
+            <div class="flex justify-center items-end gap-2 md:gap-6 my-6">
+                <div class="flex flex-col items-center transform -rotate-6">
+                    <div class="sunflower" id="flower1"></div>
+                    <div class="stem"></div>
+                </div>
+                <div class="flex flex-col items-center -mt-10 scale-125 z-10">
+                    <div class="sunflower" id="flower2"></div>
+                    <div class="stem" style="height: 200px;"></div>
+                </div>
+                <div class="flex flex-col items-center transform rotate-6">
+                    <div class="sunflower" id="flower3"></div>
+                    <div class="stem"></div>
+                </div>
+            </div>
+
+            <!-- Carta Glassmorphism -->
+            <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-yellow-500/30 shadow-[0_10px_30px_rgba(0,0,0,0.5)] mt-6">
+                <h2 class="text-3xl font-cursive text-yellow-400 mb-3">¡Feliz Día de las Flores Amarillas!</h2>
+                <p class="text-gray-200 text-sm md:text-base leading-relaxed">
+                    Querida amiga, quería tener este lindo detalle contigo para recordarte lo mucho que vales y la energía tan bonita que transmites siempre. ¡Gracias por tu amistad y por iluminar los días de quienes te rodean! ✨
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function createPetals(elementId) {
+            const container = document.getElementById(elementId);
+            const total = 14;
+            for (let i = 0; i < total; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.transform = `rotate(${i * (360 / total)}deg)`;
+                container.appendChild(petal);
+            }
+            const center = document.createElement('div');
+            center.className = 'center-flower';
+            container.appendChild(center);
+        }
+        createPetals('flower1'); createPetals('flower2'); createPetals('flower3');
+
+        function createSparkles() {
+            const container = document.getElementById('sparkles-container');
+            for (let i = 0; i < 35; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                const size = Math.random() * 4 + 2;
+                sparkle.style.width = size + 'px';
+                sparkle.style.height = size + 'px';
+                sparkle.style.left = Math.random() * 100 + 'vw';
+                sparkle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                sparkle.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(sparkle);
+            }
+        }
+
+        function startExperience() {
+            const audio = document.getElementById('bg-audio');
+            audio.play().catch(e => console.log("Error al reproducir audio:", e));
+            
+            const startScreen = document.getElementById('start-screen');
+            const mainContent = document.getElementById('main-content');
+            
+            createSparkles();
+            startScreen.style.opacity = '0';
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+                mainContent.classList.remove('hidden');
+                setTimeout(() => mainContent.style.opacity = '1', 50);
+            }, 1000);
+        }
+
+        function toggleAudio() {
+            const audio = document.getElementById('bg-audio');
+            const icon = document.getElementById('music-icon');
+            if (audio.paused) {
+                audio.play();
+                icon.className = 'fas fa-music text-lg';
+            } else {
+                audio.pause();
+                icon.className = 'fas fa-volume-mute text-lg';
+            }
+        }
+    </script>
+</body>
+</html>
